@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
-import { DragDropContext } from 'react-beautiful-dnd';
-// import ActiveTodo from './ActiveTodo';
-// import InprogressTodo from './InprogressTodo';
-// import DoneTodo from './DoneTodo';
 
 function Home() {
 
@@ -16,6 +12,12 @@ function Home() {
     });
     const [ doneTodos, setDoneTodos ] = useState([]);
     const [ onGoingTodos, setOnGoingTodos ] = useState([]);
+    const [ value, setValue ] = useState('ACTIVE');
+    const options = [
+        { value : 'ACTIVE', label : 'Active'},
+        { value : 'ONGOING', label : 'On-going'},
+        { value : 'DONE', label : 'Done'}
+    ]
 
     const handleEdit = (id) => {
         try {
@@ -38,68 +40,28 @@ function Home() {
         }
     }
 
-    const onDragEnd = (result) => {
-        console.log(result);
-        const { destination, source } = result;
-        if(!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) return;
-
-        // if(source.droppableId === 'active-todos' && destination.droppableId === 'ongoing-todos'){
-        //     const move = todos?.splice(source.index, 1);
-        //     onGoingTodos.splice(destination.index, 0, move)
-        //     setTodos(todos);
-        //     setOnGoingTodos(onGoingTodos);
-        // }else if(source.droppableId === 'active-todos' && destination.droppableId === 'done-todos'){
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setDoneTodos(move);
-        // }else{
-        //     const move = todos?.splice(source.index, 0);
-        //     setTodos(todos);
-        // }
-
-        // if(source.droppableId === 'active-todos' && destination.droppableId === 'ongoing-todos'){
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setOnGoingTodos(move);
-        // }else if(source.droppableId === 'active-todos' && destination.droppableId === 'done-todos'){
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setDoneTodos(move);
-        // }else{
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setDoneTodos(move);
-        // }
-
-        // if(source.droppableId === 'active-todos' && destination.droppableId === 'ongoing-todos'){
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setOnGoingTodos(move);
-        // }else if(source.droppableId === 'active-todos' && destination.droppableId === 'done-todos'){
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setDoneTodos(move);
-        // }else{
-        //     const move = todos?.splice(source.index, 1);
-        //     setTodos(todos);
-        //     setDoneTodos(move);
-        // }
-
-        // let task;
-        // source.droppableId === 'active-todos' ? task = todos : source.droppableId === 'ongoing-todo' ? task = onGoingTodos : task = 'done-todos';
-
-        // let dropTask;
-        // destination.droppableId === 'active-todos' ? dropTask = todos : destination.droppableId === 'ongoing-task' ? dropTask = onGoingTodos : dropTask = doneTodos;
-        
-        // if(source.droppableId === 'ongoing-todos'){
-
-        // }else{
-
-        // }
-       
-        // setOnGoingTodos(ongoing);
-        // setDoneTodos(done);
+    const handleMove = (val, id, type) => {
+        try {
+            const { value } = val;
+            if(type === "active"){
+                const todo = todos.find((t) => t.id === id);
+                const index = todos.findIndex((t) => t.id === id);
+                console.log(index)
+                if(value === 'ONGOING'){
+                    const move = todos.splice(index, 1);
+                    setTodos([...todos, todos]);
+                    setOnGoingTodos([...onGoingTodos, move]);
+                }
+            }
+            // const todo = todos.find((t) => t.id === id);
+            // const index = todos.findIndex(todo);
+            // if()
+        } catch (error) {
+            console.log(`handle edit error : ${error.message}`);
+        }
     }
+
+    console.log(todos, onGoingTodos, doneTodos, "todos")
 
     return (
         <>
@@ -110,7 +72,6 @@ function Home() {
                     </div>
                 </div>
             </section>
-            <DragDropContext onDragEnd={onDragEnd}>
                 <AddTodo
                     setTodos={setTodos}
                     todos={todos}
@@ -127,8 +88,11 @@ function Home() {
                     setDoneTodos={setDoneTodos}
                     onGoingTodos={onGoingTodos}
                     setOnGoingTodos={setOnGoingTodos}
+                    options={options}
+                    value={value}
+                    setValue={setValue}
+                    handleMove={handleMove}
                 />
-            </DragDropContext>
         </>
     )
 }
