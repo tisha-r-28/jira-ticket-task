@@ -15,9 +15,14 @@ function AddTodo(props) {
             } else {
                 const newTodo = {
                     id: todos.length + 1,
-                    todo: todoForm.todo
+                    todo: todoForm.todo,
+                    type : "active"
                 };
-                setTodos([...todos, newTodo]);
+                if(newTodo.todo === '' && !newTodo.todo){
+                    return;
+                }else{
+                    setTodos([...todos, newTodo]);
+                }
             }
             
             setTodoForm({
