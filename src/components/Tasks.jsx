@@ -98,7 +98,8 @@ const TaskForm = (props) => {
                     setTaskFormData({
                         id : uuidv4(),
                         title : '',
-                        task :''
+                        task :'',
+                        type :'active'
                     })
                 }
             }else{

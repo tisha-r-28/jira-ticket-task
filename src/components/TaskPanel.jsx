@@ -54,8 +54,9 @@ const handleUpdate = async (id, tasks, taskFormData, setTaskFormData) => {
             setTaskFormData({
                 ...taskFormData,
                 id : task._id,
-                title : task.title,
-                task : task.task
+                title : task.title, 
+                task : task.task,
+                type : task.type
             })
         }
     } catch (error) {
@@ -129,7 +130,7 @@ const ActiveTask = (props) => {
 }
 
 const OngoingTask = (props) => {
-    const { tasks, setTasks } = props;
+    const { tasks, setTasks, taskFormData, setTaskFormData } = props;
     const ongoingTask = tasks.filter((task) => task.type === 'ongoing');
     const options = [
         {value : 'active', label : 'Active'},
@@ -153,7 +154,7 @@ const OngoingTask = (props) => {
                                             isSearchable={false}
                                             onChange={(selectedOption) =>handleMove(selectedOption, setTasks, task._id, tasks)}
                                         />
-                                        <i className="fa-regular fa-pen-to-square fs-5 mx-4" style={{ cursor: "pointer" }}></i>
+                                        <i className="fa-regular fa-pen-to-square fs-5 mx-4" style={{ cursor: "pointer" }} onClick={() => handleUpdate(task?._id, tasks, taskFormData, setTaskFormData)}></i>
                                         <i className="fa-regular fa-trash-can fs-5" style={{ cursor: "pointer" }} onClick={() => handleDelete(task?._id, tasks, setTasks)}></i>
                                     </div>
                                 </div>
@@ -166,7 +167,7 @@ const OngoingTask = (props) => {
 }
 
 const DoneTask = (props) => {
-    const { tasks, setTasks } = props;
+    const { tasks, setTasks, taskFormData, setTaskFormData } = props;
     const doneTask = tasks.filter((task) => task.type === 'done');
     const options = [
         {value : 'active', label : 'Active'},
@@ -190,7 +191,7 @@ const DoneTask = (props) => {
                                         isSearchable={false}
                                         onChange={(selectedOption) =>handleMove(selectedOption, setTasks, task._id, tasks)}
                                     />
-                                    <i className="fa-regular fa-pen-to-square fs-5 mx-4" style={{ cursor: "pointer" }}></i>
+                                    <i className="fa-regular fa-pen-to-square fs-5 mx-4" style={{ cursor: "pointer" }} onClick={() => handleUpdate(task?._id, tasks, taskFormData, setTaskFormData)}></i>
                                     <i className="fa-regular fa-trash-can fs-5" style={{ cursor: "pointer" }} onClick={() => handleDelete(task?._id, tasks, setTasks)}></i>
                                 </div>
                             </div>
@@ -225,10 +226,14 @@ function TaskPanel(props) {
                     <OngoingTask 
                         tasks={tasks}
                         setTasks={setTasks}
+                        setTaskFormData={setTaskFormData}
+                        taskFormData={taskFormData}
                     />
                     <DoneTask 
                         tasks={tasks}
                         setTasks={setTasks}
+                        setTaskFormData={setTaskFormData}
+                        taskFormData={taskFormData}
                     />
                 </div>
             </section>
