@@ -69,7 +69,7 @@ const TaskForm = (props) => {
         e.preventDefault();
         handleTaskError();
         try {
-            const task = tasks.find((task) => task.id === taskFormData.id);
+            const task = tasks.find((task) => task._id === taskFormData.id);
             
             if(!task){
                 console.log(task, "add");
