@@ -20,10 +20,10 @@ const userSchema = new Schema({
     token : {
         type : String
     },
-    task : {
-        type : mongoose.Schema.Types.Array,
+    tasks : [{
+        type : mongoose.Schema.Types.ObjectId,
         ref : 'tasks'
-    }
+    }]
 })
 
 const User = mongoose.model('users', userSchema);

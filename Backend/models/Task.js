@@ -6,6 +6,10 @@ const taskSchema = new Schema({
         type : String,
         required : true
     },
+    title : {
+        type : String,
+        require : true
+    },
     task : {
         type : String,
         required : true
@@ -13,7 +17,7 @@ const taskSchema = new Schema({
     type : {
         type : String,
         required : true,
-        default : 'Active'
+        default : 'active'
     },
     user_id : {
         type : mongoose.Schema.Types.ObjectId,

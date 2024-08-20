@@ -9,58 +9,67 @@ const mongoose = require('mongoose');
 //ROUTE - 1 create task
 router.post('/add-task', authUser, async ( req, res ) => {
     try {
+        let status = false;
         const userEmail = req.user.email;
         if(!userEmail){
             return res.status(401).json({
                 code : 401,
-                message : `unauthorized!`
+                message : `unauthorized!`,
+                status
             })
         }
-        const user = await User.findOne({email : userEmail});
+        const user = await User.findOne({email : userEmail}, { __v : 0, password : 0});
         if(!user){
             return res.status(401).json({
                 code : 401,
-                message : `unauthorized for creating tasks!`
+                message : `unauthorized for creating tasks!`,
+                status
             })
         }
-        const { id, task, type } = req.body;
-        if(!task){
+        const { id, title, task, type } = req.body;
+        if(!task || !title){
             return res.status(400).json({
                 code : 400,
-                message : `task is require!`
+                message : `task and title is require!`,
+                status
             })
         }
         const newTask = await Task.create({
             id : id,
+            title : title,
             task : task,
             type : type,
-            user_id : user
+            user_id : user._id
         })
-        await User.findByIdAndUpdate(
-            user._id,
-            { $push: { tasks: newTask._id } },
-            { new: true } 
+        await User.updateOne(
+            { email: userEmail },
+            { $push: { tasks: newTask._id } }
         );
         if(!newTask){
             return res.status(500).json({
                 code : 500,
-                message : `issue while creating task!`
+                message : `issue while creating task!`,
+                status
             })
         }
         return res.status(201).json({
             code : 201,
             message : `Task created successfully`,
             data : {
+                _id : newTask._id,
                 id : newTask.id,
+                title : newTask.title,
                 task : newTask.task,
                 type : newTask.type,
                 user : newTask.user_id
-            }
+            },
+            status : true
         })
     } catch (error) {
         return res.status(500).json({
             code : 500,
-            message : `internal server error : ${error.message}`
+            message : `internal server error : ${error.message}`,
+            status : false
         })
     }
 })
