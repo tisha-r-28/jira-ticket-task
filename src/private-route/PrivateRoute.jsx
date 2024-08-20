@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 function PrivateRoute() {
     const navigate = useNavigate();
@@ -7,10 +7,11 @@ function PrivateRoute() {
     const isValidToken = checkTokenValidity(token);
     if(!isValidToken){
         localStorage.removeItem('token');
+        navigate('/login', { replace: true });
         navigate('/login');
     }
 
-    return isValidToken ? <Outlet /> : <Navigate to='/login' replace />
+    return <Outlet /> ;
 }
 
 const checkTokenValidity = (token) => {

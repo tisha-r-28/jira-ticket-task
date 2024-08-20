@@ -21,7 +21,6 @@ function Login() {
                 [`${name}Error`]: ''
             }));
         } catch (error) {
-            console.log(`Error for handle Login Change : ${error.message}`);
         }
     }
     const handleErrors = () => {
@@ -37,7 +36,6 @@ function Login() {
                 setError(errors);
             }
         } catch (error) {
-            console.log(`Error for handle Login Change : ${error.message}`);
         }
     }
     const handleLoginSubmit = async (e) => {
@@ -76,9 +74,7 @@ function Login() {
                     password: ''
                 });
             }
-            console.log(result);
         } catch (error) {
-            console.log(`Error for handle Login Submit: ${error.message}`);
         }
     }
     return (

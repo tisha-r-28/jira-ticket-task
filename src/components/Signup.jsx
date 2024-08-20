@@ -24,7 +24,6 @@ function Signup() {
                 [`${name}Error`] : ''
             }))
         } catch (error) {
-            console.log(`Error for handle Login Change : ${error.message}`);
         }
     }
     const handleErrors = () => {
@@ -52,7 +51,6 @@ function Signup() {
                 setError(errors);
             }
         } catch (error) {
-            console.log(`Error for handle Login Change : ${error.message}`);
         }
     }
     const handleSignupSubmit = async (e) => {
@@ -83,7 +81,6 @@ function Signup() {
                 setSignupForm({});
             }
         } catch (error) {
-            console.log(`Error for handle Login Change : ${error.message}`);
         }
     }
 

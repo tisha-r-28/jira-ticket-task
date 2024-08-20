@@ -2,35 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import TaskPanel from './TaskPanel';
 import { useNavigate } from 'react-router';
+import { fetchTasks } from '../API/APIs';
 
 const token = JSON.parse(localStorage.getItem('token'));
 
-const fetchTasks = async (setTasks, navigate) => {
-    try {
-        const response = await fetch(`http://localhost:8000/api/tasks/all-tasks`, {
-            method : 'GET',
-            headers : {
-                'authToken' : `${token}`
-            }
-        })
-        const result = await response.json();
-        if(result.code === 200){
-            setTasks(result.data);
-        }
-        if(result.code === 401){
-            navigate('/login')
-        }
-        if(result.code === 204){
-            console.log(result.message);
-        }
-        return result;
-    } catch (error) {
-        console.log(`fetch task error :${error.message}`);
-    }
-}
-
 const TaskForm = (props) => {
-    const token = JSON.parse(localStorage.getItem('token'));
     const { taskFormData, setTaskFormData, tasks, setTasks } = props;
     const [ error, setError ] = useState({});
     const handleTaskChange = (e) => {
@@ -46,7 +22,6 @@ const TaskForm = (props) => {
                 [`${name}Error`] : ''
             }))
         } catch (error) {
-            console.log(`error of task change : ${error.message}`);
         }
     }
     const handleTaskError = () => {
@@ -62,7 +37,6 @@ const TaskForm = (props) => {
                 setError(errors);
             }
         } catch (error) {
-            console.log(`error of task error handler : ${error.message}`);
         }
     }
     const handleTaskSubmit = async (e) => {
@@ -72,7 +46,6 @@ const TaskForm = (props) => {
             const task = tasks.find((task) => task._id === taskFormData.id);
             
             if(!task){
-                console.log(task, "add");
                 const response = await fetch(`http://localhost:8000/api/tasks/add-task`, {
                     method : 'POST',
                     headers : {
@@ -103,7 +76,6 @@ const TaskForm = (props) => {
                     })
                 }
             }else{
-                console.log(task, "update");
                 const response = await fetch(`http://localhost:8000/api/tasks/update-task?task_id=${taskFormData.id}`, {
                     method : 'PUT',
                     headers : {
@@ -138,10 +110,8 @@ const TaskForm = (props) => {
                 }
             }
         } catch (error) {
-            console.log(`error of task error handler : ${error.message}`);
         }
     }
-    console.log(tasks, "added");
     
     return(
         <>
@@ -173,7 +143,8 @@ function Tasks() {
     })
     const [ tasks, setTasks ] = useState([]);
     useEffect(() => {
-        fetchTasks(setTasks, navigate)
+        fetchTasks(setTasks, navigate);
+        // eslint-disable-next-line
     }, [])
     return (
         <>

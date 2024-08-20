@@ -1,97 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Select from 'react-select';
+import { handleDelete, handleUpdate, handleMove } from '../API/APIs';
 
-const token = JSON.parse(localStorage.getItem('token'));
-
-// const fetchTasks = async (setTasks, navigate) => {
-//     try {
-//         const response = await fetch(`http://localhost:8000/api/tasks/all-tasks`, {
-//             method : 'GET',
-//             headers : {
-//                 'authToken' : `${token}`
-//             }
-//         })
-//         const result = await response.json();
-//         if(result.code === 200){
-//             setTasks(result.data);
-//         }
-//         if(result.code === 401){
-//             navigate('/login')
-//         }
-//         if(result.code === 204){
-//             console.log(result.message);
-//         }
-//         return result;
-//     } catch (error) {
-//         console.log(`fetch task error :${error.message}`);
-//     }
-// }
-
-const handleDelete = async (id, tasks, setTasks) => {
-    try {
-        const response = await fetch(`http://localhost:8000/api/tasks/remove-task?task_id=${id}`, {
-            method : 'DELETE',
-            headers : {
-                'authToken' : `${token}`
-            }
-        })
-        await response.json();
-        const task = tasks.findIndex(task => task._id === id);
-        tasks.splice(task, 1);
-        setTasks([...tasks])
-    } catch (error) {
-        console.log(`delete task error :${error.message}`);
-    }
-}
-
-const handleUpdate = async (id, tasks, taskFormData, setTaskFormData) => {
-    try {
-        console.log(id, "update");
-        
-        const task = tasks.find((task) => task._id === id);
-        if(task){
-            setTaskFormData({
-                ...taskFormData,
-                id : task._id,
-                title : task.title, 
-                task : task.task,
-                type : task.type
-            })
-        }
-    } catch (error) {
-        console.log(`delete task error :${error.message}`);
-    }
-}
-
-const handleMove = async ({value}, setTasks, id, tasks) => {
-    try {
-        const response = await fetch(`http://localhost:8000/api/tasks/update-task?task_id=${id}`, {
-            method : 'PUT',
-            headers : {
-                'Content-Type' : 'application/json',
-                'authToken' : `${token}`
-            },
-            body : JSON.stringify({
-                type : value
-            })
-        });
-        const result = await response.json();
-        if(result?.code === 200){
-            setTasks(prevTasks =>
-                prevTasks.map(task =>
-                    task._id === id ? { ...task, type: value } : task
-                )
-            );
-        }
-        console.log(tasks, "changed");
-    } catch (error) {
-        console.log(`move task error :${error.message}`);
-    }
-}
-
-
-const ActiveTask = (props) => {
+const ActiveTask = React.memo((props) => {
     const { tasks, setTasks, value, taskFormData, setTaskFormData } = props;
     const activeTask = tasks.filter((task) => task.type === 'active');
     const options = [
@@ -127,9 +39,9 @@ const ActiveTask = (props) => {
         </section>
         </>
     )
-}
+})
 
-const OngoingTask = (props) => {
+const OngoingTask = React.memo((props) => {
     const { tasks, setTasks, taskFormData, setTaskFormData } = props;
     const ongoingTask = tasks.filter((task) => task.type === 'ongoing');
     const options = [
@@ -164,9 +76,9 @@ const OngoingTask = (props) => {
             </section>
         </>
     )
-}
+})
 
-const DoneTask = (props) => {
+const DoneTask = React.memo((props) => {
     const { tasks, setTasks, taskFormData, setTaskFormData } = props;
     const doneTask = tasks.filter((task) => task.type === 'done');
     const options = [
@@ -201,7 +113,7 @@ const DoneTask = (props) => {
         </section>
         </>
     )
-}
+})
 
 function TaskPanel(props) {
     const { tasks, setTasks, setTaskFormData, taskFormData, fetchTasks } = props;
@@ -210,8 +122,8 @@ function TaskPanel(props) {
     const navigate = useNavigate();
     useEffect(() => {
         fetchTasks(setTasks, navigate);
+        // eslint-disable-next-line
     }, []);
-    console.log(tasks, "tasks");
     return (
         <>
             <section className="container-fluid">
